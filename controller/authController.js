@@ -7,20 +7,20 @@ const { JWT_key } = require('../secrets');
 module.exports.Signup = async function Signup(req, res) {
     try {
         
-        let data = req.body;
-        // console.log(data)
-        let user = await userModel.create(data);
+        const data = req.body;
+        console.log(data)
+
+        let user = await userModel.findOne({ email: data.email });
         if (user) {
             res.json({
-                message:"User Signup",user
-            })
+                message: "Already Exist", user
+            });
+
         } else {
-            res.json({
-                message:"User Could not SignedUp"
-            })
+            userModel.create(data);
+            console.log("user is Created")
         }
-        
-        console.log("user is Created")
+
     }
     catch (err) {
         res.json({
@@ -36,13 +36,13 @@ module.exports.deleteSignup=async function deleteSignup(req, res) {
     res.json({
         message: "Data is deleted"
     })
-
 }
 
 module.exports.login = async function (req, res) {
     try {
         let { email, password } = req.body;
         let user = await userModel.findOne({ email: email });
+        console.log(user)
         if (user) {
             //check if password matches
             //bcrypt - compare
@@ -70,3 +70,60 @@ module.exports.login = async function (req, res) {
     }
 }
 
+module.exports.forgotPassword = async function (req, res) {
+    try {
+        let { email } = req.body;
+        const user = userModel.findOne({ email: email });
+        if (user) {
+            const restToken = user.createRestToken();
+            // https://xyz.com/restPassword/restToken
+            let restPasswordLink = `${res.protcol}://${res.get('host')}/restpassword/{restToken}`;
+
+        } else {
+            res.json({
+                message: "user Not Found"
+            })
+        }
+    }
+    catch (err) {
+        res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+module.exports.restPassword = async function (req, res) {
+    try {
+        const token = req.params.token;
+        let { password, confirmPassword } = req.body;
+        const user = userModel.findOne({ restToken: token });
+        if (user) {
+
+            // Rest Password handler will update password with DB
+            user.restPasswordHandler(password, confirmPassword);
+            await user.save();
+
+            res.josn({
+                message: "Password Changed "
+            })
+        }
+        else {
+            res.json({
+                message: "user Not found"
+            })
+        }
+
+    }
+    catch (err) {
+        res.json({
+            message: err.message
+        })
+    }
+}
+
+module.exports.Logout = async function (req, res) {
+    res.cookie('login', ' ', { maxAge: 1 });
+    res.json({
+        message: "User is Logged Out"
+    })
+}

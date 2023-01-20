@@ -10,9 +10,12 @@ app.use(cookieParser());
 // console.log(__dirname)
 const userRouter = require('./Routers/userRouter')
 const authRouter = require('./Routers/authRouter');
+const planRouter = require('./Routers/planRouter');
 
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/plan', planRouter);
+
 app.get("/", (req, res) => {
 
     res.sendFile("./public/views/index.html", { root: __dirname });

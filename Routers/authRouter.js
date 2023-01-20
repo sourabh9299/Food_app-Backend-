@@ -10,8 +10,4 @@ authRouter
 .get()
 .post()
 
-
-
-
-
 module.exports = authRouter

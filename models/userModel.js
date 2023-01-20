@@ -3,10 +3,12 @@ const { db_link } = require("../secrets")
 mongoose.set('strictQuery', true);
 const brypt = require('bcrypt');
 var emailvalidator = require("email-validator");
+const { v4: uuidv4 } = require('uuid')
+
 
 mongoose.connect(db_link)
     .then(function () {
-        console.log("Db is connected ")
+        console.log("User-Db is connected ")
     })
     .catch(function (err) {
         console.log(err)
@@ -29,11 +31,11 @@ const userSchema = mongoose.Schema({
 
     }
     ,
-    confirm: {
+    confirmPassword: {
         type: String,
         required: true,
         validate: function () {
-            return this.confirm == this.password;
+            return this.confirmPassword == this.password;
         }
 
     },
@@ -56,7 +58,7 @@ userSchema.post('save', function () {
 });
 
 userSchema.pre('save', function () {
-    this.confirm = undefined;
+    this.confirmPassword = undefined;
 })
 
 // userSchema.pre('save', async function () {
@@ -67,7 +69,21 @@ userSchema.pre('save', function () {
 
 // });
 
+userSchema.methods.createRestToken = function () {
+    const restToken = uuidv4();
+    this.restToken = restToken;
+}
+
+userSchema.methods.restPasswordHandler = function () {
+    this.password = password;
+    this.confirmPassword = this.confirmPassword
+    this.restToken = undefined;
+
+}
+
+
 const userModel = mongoose.model('userModel', userSchema);
+
 
 module.exports=userModel
 
