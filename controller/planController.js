@@ -55,7 +55,10 @@ module.exports.createPlan = async function createPlan(req, res) {
             });
 
         } else {
-            planModel.create(data);
+            await planModel.create(plans);
+            res.json({
+                message: "Data is Saved"
+            })
         }
     }
     catch (err) {
@@ -66,7 +69,25 @@ module.exports.createPlan = async function createPlan(req, res) {
 }
 
 module.exports.deletePlan = async function deletePlan(req, res) {
-    res.json({ message: "req recived" })
+    try {
+        const plan = req.body;
+        const plantoberemoved = await planModel.findOne({ name: plan.name });
+        if (plantoberemoved) {
+            await planModel.deleteOne(plantoberemoved),
+                res.json({
+                    message: "Plan is deleted"
+                })
+        } else {
+            res.json({
+                message: "plan not found"
+            })
+        }
+    }
+    catch (err) {
+        res.json({
+            message: err.message
+        })
+    }
 }
 
 

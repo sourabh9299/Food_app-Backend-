@@ -18,7 +18,7 @@ module.exports.Signup = async function Signup(req, res) {
 
         } else {
             userModel.create(data);
-            console.log("user is Created")
+            res.json({ message: "user is Created" })
         }
 
     }

@@ -11,9 +11,11 @@ app.use(cookieParser());
 const userRouter = require('./Routers/userRouter')
 const authRouter = require('./Routers/authRouter');
 const planRouter = require('./Routers/planRouter');
+const reviewRouter = require('./Routers/reviewRouter');
 
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
+app.use('/plan', planRouter);
 app.use('/plan', planRouter);
 
 app.get("/", (req, res) => {

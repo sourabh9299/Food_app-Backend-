@@ -31,11 +31,11 @@ const userSchema = mongoose.Schema({
 
     }
     ,
-    confirmPassword: {
+    confirm: {
         type: String,
         required: true,
         validate: function () {
-            return this.confirmPassword == this.password;
+            return this.confirm == this.password;
         }
 
     },
@@ -43,6 +43,11 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['admin', 'user', 'restaurantowner', 'deliveryboy'],
         default: 'user'
+    },
+    profile: {
+        type: String,
+        default: 'img/users/default.jpg'
+
     }
 });
 

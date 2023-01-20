@@ -14,14 +14,16 @@ planRouter
     .get(getAllPlans)
 
 planRouter
+    .route('/top3')
+    .get(top3Plans)
+
+planRouter.use(protectRoute)
+planRouter
     .route("/plans/:id")
     .get(getPlan)
 
 
-planRouter
-    .route('/top3')
-    .get(top3Plans)
-        
+
 planRouter.use(isAuthorized(['admin', 'restaurantowner']))
 planRouter
     .route('/curdPlan')
